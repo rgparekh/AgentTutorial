@@ -91,7 +91,7 @@ def extract_event_info(user_input: str) -> EventExtraction:
     response_json = json.loads(response.candidates[0].content.parts[0].text) 
 
     logger.info(
-        f"Extraction complete - Is calendar event: {response_json["is_calendar_event"]}, Confidence: {response_json["confidence_score"]:.2f}"
+        f"Extraction complete - Is calendar event: {response_json['is_calendar_event']}, Confidence: {response_json['confidence_score']:.2f}"
     )
 
     return response 
@@ -119,9 +119,9 @@ def parse_event_details(description: str) -> EventDetails:
     response_json = json.loads(response.candidates[0].content.parts[0].text) 
 
     logger.info(
-        f"Parsed event details - Name: {response_json["name"]}, Date: {response_json["date"]}, Duration: {response_json["duration_minutes"]}"
+        f"Parsed event details - Name: {response_json['name']}, Date: {response_json['date']}, Duration: {response_json['duration_minutes']}"
     )
-    logger.debug(f"Participants: {', '.join(response_json["participants"])}")
+    logger.debug(f"Participants: {', '.join(response_json['participants'])}")
 
     return response 
 
@@ -144,7 +144,7 @@ def generate_confirmation(event_details: EventDetails) -> EventConfirmation:
     response = run_model(model_name, contents, config)
     response_json = json.loads(response.candidates[0].content.parts[0].text) 
 
-    logger.info(f"Confirmation message generated: {response_json["confirmation_message"]}")
+    logger.info(f"Confirmation message generated: {response_json['confirmation_message']}")
 
     return response
 
@@ -163,7 +163,7 @@ def process_calendar_request(user_input: str) -> Optional[EventConfirmation]:
         or response_json["confidence_score"] < 0.7
     ):
         logger.warning(
-            f"Gate check failed - is_calendar_event: {response_json["is_calendar_event"]}, confidence: {response_json["confidence_score"]:.2f}"
+            f"Gate check failed - is_calendar_event: {response_json['is_calendar_event']}, confidence: {response_json['confidence_score']:.2f}"
         )
         return None
 
@@ -188,11 +188,11 @@ user_input = "Dentist's appointment next Friday from 8:30 AM to 10:00 AM PT. Lea
 result = process_calendar_request(user_input)
 if result:
     result_json = json.loads(result.candidates[0].content.parts[0].text) 
-    print(f"Confirmation: {result_json["confirmation_message"]}")
+    print(f"Confirmation: {result_json['confirmation_message']}")
     if result_json["calendar_link"] is not None:
-        print(f"Calendar Link: {result_json["calendar_link"]}")
+        print(f"Calendar Link: {result_json['calendar_link']}")
 else:
-    print("This doesn't appear to be a calendar event request.")
+    print(f"Request: '{user_input}' doesn't appear to be a calendar event request.")
 
 
 # --------------------------------------------------------------
@@ -207,4 +207,4 @@ if result:
     if result.calendar_link:
         print(f"Calendar Link: {result.calendar_link}")
 else:
-    print("This doesn't appear to be a calendar event request.")
+    print(f"Request: '{user_input}' doesn't appear to be a calendar event request.")

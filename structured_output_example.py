@@ -2,16 +2,23 @@
 
 import os
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
-# Configure the API
+
 try:
-    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+    google_api_key = os.environ["GOOGLE_API_KEY"]
+    print("Google API Key loaded successfully.")
 except KeyError:
     print("Error: GOOGLE_API_KEY environment variable not set.")
+    google_api_key = None # Or handle the error as appropriate
     exit()
 
-model = genai.GenerativeModel('gemini-2.0-flash')
+client = genai.Client(
+    api_key=google_api_key
+)
+
+model = 'gemini-2.5-flash'
 
 def get_json_output():
     """Get structured JSON output from Gemini"""
@@ -34,7 +41,13 @@ def get_json_output():
     """
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json"
+            }
+        )
         print("Raw response:")
         print(response.text)
         
@@ -42,7 +55,6 @@ def get_json_output():
         parsed = json.loads(response.text)
         print("\nParsed JSON:")
         print(json.dumps(parsed, indent=2))
-        
         return parsed
     except json.JSONDecodeError as e:
         print(f"JSON parsing failed: {e}")
@@ -76,7 +88,10 @@ def get_formatted_output():
     """
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt
+        )
         print(response.text)
         return response.text
     except Exception as e:
@@ -111,7 +126,10 @@ def get_markdown_output():
     """
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt
+        )
         print(response.text)
         return response.text
     except Exception as e:
@@ -131,7 +149,10 @@ def get_csv_output():
     """
     
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt
+        )
         print(response.text)
         return response.text
     except Exception as e:

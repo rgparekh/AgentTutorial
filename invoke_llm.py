@@ -11,6 +11,7 @@ try:
 except KeyError:
     print("Error: GOOGLE_API_KEY environment variable not set.")
     google_api_key = None # Or handle the error as appropriate
+    exit()
 
 try:
     client = genai.Client(

@@ -130,10 +130,10 @@ async def validate_request(user_input: str) -> bool:
 
     if not is_valid:
         logger.warning(
-            f"Validation failed: Calendar={calendar_check_json["is_calendar_request"]}, Security={security_check_json["is_safe"]}"
+            f"Validation failed: Calendar={calendar_check_json['is_calendar_request']}, Security={security_check_json['is_safe']}"
         )
         if security_check_json["risk_flags"]:
-            logger.warning(f"Security flags: {security_check_json["risk_flags"]}")
+            logger.warning(f"Security flags: {security_check_json['risk_flags']}")
 
     return is_valid
 
