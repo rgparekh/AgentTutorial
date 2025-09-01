@@ -1,27 +1,31 @@
 # Program to invoke an LLM
 
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
+
 
 try:
-    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+    google_api_key = os.environ["GOOGLE_API_KEY"]
+    print("Google API Key loaded successfully.")
 except KeyError:
     print("Error: GOOGLE_API_KEY environment variable not set.")
-    exit()
+    google_api_key = None # Or handle the error as appropriate
 
-# Create the model instance
-# For text-only prompts, use 'gemini-2.0-flash'
-model = genai.GenerativeModel('gemini-2.0-flash')
-
-# The prompt you want to send to Gemini
-prompt = "Write a limerick python programming language"
-
-print(f"Sending prompt: {prompt}\n")
-
-# Generate content
 try:
-    response = model.generate_content(prompt)
-    
+    client = genai.Client(
+        api_key=google_api_key
+    )    
+
+    prompt = 'Explain quantum physics to a 10-year old in 200 words or less'
+
+    print(f"Sending prompt: {prompt}\n")
+
+    response = client.models.generate_content(
+        model='gemini-2.5-flash',
+        contents=prompt
+    )
+
     # Print the response text
     print("--- Gemini's Response ---")
     print(response.text)
@@ -29,3 +33,4 @@ try:
 
 except Exception as e:
     print(f"An error occurred: {e}")    
+    
